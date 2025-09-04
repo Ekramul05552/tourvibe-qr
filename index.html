@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TourVibe – Scan & Tour</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+html { scroll-behavior: smooth; }
+body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff; }
+
+/* Parallax background */
+.parallax {
+  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80");
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+}
+.overlay {
+  background: rgba(0,0,0,0.55);
+  padding: 50px 20px;
+  border-radius: 20px;
+}
+
+/* Logo */
+.logo-container {
+  display: inline-block;
+  background: rgba(255,255,255,0.9);
+  border-radius: 25px;
+  padding: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: scale(0.8);
+  animation: logoFadeIn 1s forwards;
+}
+.logo { max-width: 280px; width: 100%; height: auto; display: block; margin: auto; }
+@keyframes logoFadeIn { 0% {opacity:0;transform:scale(0.8);} 60% {opacity:1;transform:scale(1.05);} 100% {opacity:1;transform:scale(1);} }
+
+/* Packages */
+.card {
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.6s, transform 0.6s;
+  opacity: 0;
+  transform: translateY(30px);
+  background: white;
+  cursor: pointer;
+}
+.card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.card.show { opacity: 1; transform: translateY(0); }
+.card.selected { border: 2px solid #f77e01; background: #fff7f0; }
+
+/* Submit Button */
+.btn-brand {
+  background-color: #f77e01;
+  border-color: #f77e01;
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+.btn-brand:hover { background-color: #e67300; border-color: #e67300; }
+@keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.03);} 100% {transform:scale(1);} }
+.btn-bounce { animation: bounce 0.3s; }
+@keyframes bounce { 0%{transform:scale(1);} 50%{transform:scale(1.1);} 100%{transform:scale(1);} }
+
+/* Form + Success */
+input:focus, select:focus { border-color: #f77e01; box-shadow: 0 0 0 0.2rem rgba(247,126,1,0.25); outline: none; }
+#successMessage {
+  font-size: 1.2rem; font-weight: bold;
+  background: rgba(255,255,255,0.95); padding: 15px 25px; border-radius: 15px;
+  display: inline-block; opacity: 0; transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
+  transform: scale(0.8); margin-top: 15px;
+}
+#successMessage.show { opacity:1; transform:scale(1); }
+
+/* Confetti */
+.confetti { position: fixed; width: 10px; height: 10px; background: #f77e01; animation: fall 3s linear infinite; top: -10px; z-index: 9999; }
+@keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+
+/* WhatsApp & Call */
+.whatsapp-btn, .call-btn {
+  font-weight: bold; padding: 12px 20px; border-radius: 30px; display: inline-block; text-decoration: none; margin:5px;
+}
+.whatsapp-btn { background: #25D366; color:white; }
+.whatsapp-btn:hover { background: #1ebe5c; color:white; }
+.call-btn { background: #007BFF; color:white; }
+.call-btn:hover { background: #0056b3; }
+
+/* Back-to-top button */
+#backToTop {
+  position: fixed; bottom: 30px; right: 30px; background: #f77e01; color:white;
+  padding:12px 18px; border-radius:50px; font-size:18px; cursor:pointer; display:none; z-index:1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: opacity 0.3s, transform 0.3s;
+}
+#backToTop:hover { background:#e67300; transform:scale(1.1); }
+
+@media (max-width:768px){ .logo{max-width:200px;} .overlay{padding:30px 15px;} .card{margin-bottom:20px;} }
+</style>
+</head>
+<body>
+
+<!-- Hero Parallax -->
+<div class="parallax">
+  <div class="overlay text-center">
+    <div class="logo-container"><img src="tourvibe-logo.png" alt="TourVibe Logo" class="logo"></div>
+    <h1>🌍 Welcome to TourVibe!</h1>
+    <p class="lead">Discover Bangladesh with our exclusive packages.</p>
+    <p>📌 Follow us on
+      <a href="https://www.facebook.com/thetourvibe" target="_blank" style="color:#FFD700;">Facebook Page</a>
+    </p>
+  </div>
+</div>
+
+<div class="container text-center py-5">
+
+  <!-- Packages -->
+  <h2 class="mb-4">✨ Our Travel Packages</h2>
+  <div class="row g-4">
+    <div class="col-md-4"><div class="card p-3" data-package="Cox’s Bazar"><h3>🏖️ Cox’s Bazar Tour</h3><p>3 Days / 2 Nights – Starting from 6,500৳</p></div></div>
+    <div class="col-md-4"><div class="card p-3" data-package="Sylhet"><h3>⛰️ Sylhet Adventure</h3><p>2 Days / 1 Night – Starting from 4,800৳</p></div></div>
+    <div class="col-md-4"><div class="card p-3" data-package="Bandarban"><h3>🌲 Bandarban Escape</h3><p>3 Days / 2 Nights – Starting from 7,200৳</p></div></div>
+    <div class="col-md-4"><div class="card p-3" data-package="Sundarbans"><h3>🛶 Sundarbans Safari</h3><p>2 Days / 1 Night – Starting from 5,500৳</p></div></div>
+    <div class="col-md-4"><div class="card p-3" data-package="Kuakata"><h3>🌅 Kuakata Sunrise</h3><p>3 Days / 2 Nights – Starting from 6,700৳</p></div></div>
+    <div class="col-md-4"><div class="card p-3" data-package="Rangamati"><h3>🏞️ Rangamati Retreat</h3><p>2 Days / 1 Night – Starting from 4,900৳</p></div></div>
+  </div>
+
+  <!-- Booking Form -->
+  <h2 class="mt-5" id="bookingFormSection">📩 Book Your Spot Now</h2>
+  <form id="bookingForm" class="mt-3 p-3 border rounded" style="max-width:400px; margin:auto;">
+    <div class="mb-3">
+      <input type="text" id="name" placeholder="Your Name" required pattern="[A-Za-z\s]+" title="Only letters are allowed" class="form-control" autocomplete="name">
+    </div>
+    <div class="mb-3">
+      <input type="tel" id="phone" placeholder="Your Phone Number" required pattern="[0-9]{11}" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
+    </div>
+    <div class="mb-3">
+      <select id="package" required class="form-select">
+        <option value="">Choose a Package</option>
+        <option value="Cox’s Bazar">Cox’s Bazar</option>
+        <option value="Sylhet">Sylhet</option>
+        <option value="Bandarban">Bandarban</option>
+        <option value="Sundarbans">Sundarbans</option>
+        <option value="Kuakata">Kuakata</option>
+        <option value="Rangamati">Rangamati</option>
+      </select>
+    </div>
+    <button type="submit" id="submitBtn" class="btn btn-brand w-100">Submit</button>
+  </form>
+
+  <div id="successMessage">✅ Thank you! Your booking has been submitted successfully.</div>
+
+  <!-- WhatsApp & Call -->
+  <div class="mt-4">
+    <a href="https://wa.me/8801990723902?text=Hi%20TourVibe!%20I%20want%20to%20know%20about%20your%20packages." class="whatsapp-btn">💬 Chat on WhatsApp</a>
+    <a href="tel:+8801990723902" class="call-btn">📞 Call Now</a>
+  </div>
+</div>
+
+<!-- Facebook Feed -->
+<div class="container text-center py-5">
+  <h2 class="mb-4">📘 Follow Our Facebook Updates</h2>
+  <div class="fb-page"
+     data-href="https://www.facebook.com/thetourvibe"
+     data-tabs="timeline"
+     data-width="400"
+     data-height="500"
+     data-small-header="false"
+     data-adapt-container-width="true"
+     data-hide-cover="false"
+     data-show-facepile="true">
+    <blockquote cite="https://www.facebook.com/thetourvibe" class="fb-xfbml-parse-ignore">
+      <a href="https://www.facebook.com/thetourvibe">TourVibe Facebook</a>
+    </blockquote>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<div id="backToTop">⬆️</div>
+
+<!-- Facebook SDK -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0"></script>
+
+<script>
+const cards = document.querySelectorAll('.card');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => { if (entry.isIntersecting){ entry.target.classList.add('show'); observer.unobserve(entry.target); } });
+}, { threshold:0.2 });
+cards.forEach(card => observer.observe(card));
+
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+    cards.forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const selectedPackage = card.getAttribute('data-package');
+    document.getElementById('package').value = selectedPackage;
+    // Smooth scroll to form
+    document.getElementById('bookingFormSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+const form = document.getElementById('bookingForm');
+const successMessage = document.getElementById('successMessage');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  submitBtn.classList.add('btn-bounce');
+  setTimeout(()=>submitBtn.classList.remove('btn-bounce'),300);
+
+  const formData = new FormData();
+  formData.append('entry.1234567890', document.getElementById('name').value);
+  formData.append('entry.0987654321', document.getElementById('phone').value);
+  formData.append('entry.1122334455', document.getElementById('package').value);
+
+  fetch('https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse',{ method:'POST', body:formData, mode:'no-cors'})
+  .then(()=> {
+    successMessage.classList.add('show');
+    for(let i=0;i<30;i++){
+      const confetti=document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left=Math.random()*window.innerWidth+'px';
+      confetti.style.background=`hsl(${Math.random()*360},100%,50%)`;
+      document.body.appendChild(confetti);
+      setTimeout(()=>confetti.remove(),3000);
+    }
+    form.reset();
+    cards.forEach(c => c.classList.remove('selected'));
+    setTimeout(()=>successMessage.classList.remove('show'),5000);
+  }).catch(err=>console.error('Error!',err.message));
+});
+
+const backToTopBtn = document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{ backToTopBtn.style.display=(window.scrollY>300)?'block':'none'; });
+backToTopBtn.addEventListener('click',()=>{ window.scrollTo({top:0, behavior:'smooth'}); });
+</script>
+</body>
+</html>
