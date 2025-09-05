@@ -70,20 +70,6 @@ body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff;
 .btn-bounce { animation: bounce 0.3s; }
 @keyframes bounce { 0%{transform:scale(1);} 50%{transform:scale(1.1);} 100%{transform:scale(1);} }
 
-/* Form + Success */
-input:focus, select:focus { border-color: #f77e01; box-shadow: 0 0 0 0.2rem rgba(247,126,1,0.25); outline: none; }
-#successMessage {
-  font-size: 1.2rem; font-weight: bold;
-  background: rgba(255,255,255,0.95); padding: 15px 25px; border-radius: 15px;
-  display: inline-block; opacity: 0; transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
-  transform: scale(0.8); margin-top: 15px;
-}
-#successMessage.show { opacity:1; transform:scale(1); }
-
-/* Confetti */
-.confetti { position: fixed; width: 10px; height: 10px; background: #f77e01; animation: fall 3s linear infinite; top: -10px; z-index: 9999; }
-@keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
-
 /* WhatsApp & Call */
 .whatsapp-btn, .call-btn {
   font-weight: bold; padding: 12px 20px; border-radius: 30px; display: inline-block; text-decoration: none; margin:5px;
@@ -120,6 +106,16 @@ input:focus, select:focus { border-color: #f77e01; box-shadow: 0 0 0 0.2rem rgba
 
 <div class="container text-center py-5">
 
+   <!-- Google Maps Embed -->
+  <div class="mt-4">
+    <h3>📍 Find Us on Map</h3>
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.8895045563513!2d90.39945207534422!3d23.75087918901459!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c50a71b0504f%3A0xdedeef4a4afefb2!2sHouse%204%2C%20Road%2012%2C%20Sector%206%2C%20Uttara%20House%20Building%2C%20Dhaka%201230!5e0!3m2!1sen!2sbd!4v1693908400000!5m2!1sen!2sbd"
+      width="100%" height="350" style="border:0; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15);" 
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+
   <!-- Packages -->
   <h2 class="mb-4">✨ Our Travel Packages</h2>
   <div class="row g-4">
@@ -138,23 +134,21 @@ input:focus, select:focus { border-color: #f77e01; box-shadow: 0 0 0 0.2rem rgba
       <input type="text" id="name" placeholder="Your Name" required pattern="[A-Za-z\s]+" title="Only letters are allowed" class="form-control" autocomplete="name">
     </div>
     <div class="mb-3">
-      <input type="tel" id="phone" placeholder="Your Phone Number" required pattern="[0-9]{11}" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
-    </div>
-    <div class="mb-3">
-      <select id="package" required class="form-select">
-        <option value="">Choose a Package</option>
-        <option value="Cox’s Bazar">Cox’s Bazar</option>
-        <option value="Sylhet">Sylhet</option>
-        <option value="Bandarban">Bandarban</option>
-        <option value="Sundarbans">Sundarbans</option>
-        <option value="Kuakata">Kuakata</option>
-        <option value="Rangamati">Rangamati</option>
-      </select>
-    </div>
+  <input type="tel" id="phone" name="phoneNumber" placeholder="Your Phone Number" required pattern="[0-9]{11}" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
+</div>
+<div class="mb-3">
+  <select id="package" name="package" required class="form-select">
+    <option value="">Choose a Package</option>
+    <option value="Cox’s Bazar">Cox’s Bazar</option>
+    <option value="Sylhet">Sylhet</option>
+    <option value="Bandarban">Bandarban</option>
+    <option value="Sundarbans">Sundarbans</option>
+    <option value="Kuakata">Kuakata</option>
+    <option value="Rangamati">Rangamati</option>
+  </select>
+</div>
     <button type="submit" id="submitBtn" class="btn btn-brand w-100">Submit</button>
   </form>
-
-  <div id="successMessage">✅ Thank you! Your booking has been submitted successfully.</div>
 
   <!-- WhatsApp & Call -->
   <div class="mt-4">
@@ -207,7 +201,6 @@ cards.forEach(card => {
 });
 
 const form = document.getElementById('bookingForm');
-const successMessage = document.getElementById('successMessage');
 const submitBtn = document.getElementById('submitBtn');
 
 form.addEventListener('submit', function(e){
@@ -216,25 +209,19 @@ form.addEventListener('submit', function(e){
   setTimeout(()=>submitBtn.classList.remove('btn-bounce'),300);
 
   const formData = new FormData();
-  formData.append('entry.1234567890', document.getElementById('name').value);
-  formData.append('entry.0987654321', document.getElementById('phone').value);
-  formData.append('entry.1122334455', document.getElementById('package').value);
+  formData.append('name', document.getElementById('name').value);
+  formData.append('phone', document.getElementById('phone').value);
+  formData.append('package', document.getElementById('package').value);
 
-  fetch('https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse',{ method:'POST', body:formData, mode:'no-cors'})
-  .then(()=> {
-    successMessage.classList.add('show');
-    for(let i=0;i<30;i++){
-      const confetti=document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.left=Math.random()*window.innerWidth+'px';
-      confetti.style.background=`hsl(${Math.random()*360},100%,50%)`;
-      document.body.appendChild(confetti);
-      setTimeout(()=>confetti.remove(),3000);
-    }
-    form.reset();
-    cards.forEach(c => c.classList.remove('selected'));
-    setTimeout(()=>successMessage.classList.remove('show'),5000);
-  }).catch(err=>console.error('Error!',err.message));
+  // 🔹 Replace with your Apps Script Web App URL
+  fetch('https://script.google.com/macros/s/AKfycbxF1QalS1lGGHsV1rzcsgUxOHgXOKFC12YrIon1dW7qe6pNOsticUc3A4T9hI7lmod0eg/exec', {
+    method:'POST',
+    body: formData
+  })
+  .then(() => {
+    window.location.href = "thankyou.html"; // ✅ redirect
+  })
+  .catch(err => console.error('Error!', err.message));
 });
 
 const backToTopBtn = document.getElementById('backToTop');
