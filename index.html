@@ -134,7 +134,7 @@ body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff;
       <input type="text" id="name" placeholder="Your Name" required pattern="[A-Za-z\s]+" title="Only letters are allowed" class="form-control" autocomplete="name">
     </div>
     <div class="mb-3">
-  <input type="tel" id="phone" name="phoneNumber" placeholder="Your Phone Number" required pattern="0[0-9]{11}" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="numeric">
+  <input type="tel" id="phone" name="phoneNumber" placeholder="Your Phone Number" required pattern="[0-9]{11}" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
 </div>
 <div class="mb-3">
   <select id="package" name="package" required class="form-select">
@@ -230,4 +230,3 @@ backToTopBtn.addEventListener('click',()=>{ window.scrollTo({top:0, behavior:'sm
 </script>
 </body>
 </html>
-
