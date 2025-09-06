@@ -70,6 +70,23 @@ body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff;
 .btn-bounce { animation: bounce 0.3s; }
 @keyframes bounce { 0%{transform:scale(1);} 50%{transform:scale(1.1);} 100%{transform:scale(1);} }
 
+/* Loading Spinner */
+.spinner {
+  border: 3px solid #f3f3f3; 
+  border-top: 3px solid white; 
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* WhatsApp & Call */
 .whatsapp-btn, .call-btn {
   font-weight: bold; padding: 12px 20px; border-radius: 30px; display: inline-block; text-decoration: none; margin:5px;
@@ -134,19 +151,19 @@ body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff;
       <input type="text" id="name" placeholder="Your Name" required pattern="[A-Za-z\s]+" title="Only letters are allowed" class="form-control" autocomplete="name">
     </div>
     <div class="mb-3">
-  <input type="tel" id="phone" name="phoneNumber" placeholder="Your Phone Number" required pattern="^0[0-9]{10}$" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
-</div>
-<div class="mb-3">
-  <select id="package" name="package" required class="form-select">
-    <option value="">Choose a Package</option>
-    <option value="Cox’s Bazar">Cox’s Bazar</option>
-    <option value="Sylhet">Sylhet</option>
-    <option value="Bandarban">Bandarban</option>
-    <option value="Sundarbans">Sundarbans</option>
-    <option value="Kuakata">Kuakata</option>
-    <option value="Rangamati">Rangamati</option>
-  </select>
-</div>
+      <input type="tel" id="phone" name="phoneNumber" placeholder="Your Phone Number" required pattern="^0[0-9]{10}$" maxlength="11" title="Phone number must be exactly 11 digits" class="form-control" autocomplete="tel">
+    </div>
+    <div class="mb-3">
+      <select id="package" name="package" required class="form-select">
+        <option value="">Choose a Package</option>
+        <option value="Cox’s Bazar">Cox’s Bazar</option>
+        <option value="Sylhet">Sylhet</option>
+        <option value="Bandarban">Bandarban</option>
+        <option value="Sundarbans">Sundarbans</option>
+        <option value="Kuakata">Kuakata</option>
+        <option value="Rangamati">Rangamati</option>
+      </select>
+    </div>
     <button type="submit" id="submitBtn" class="btn btn-brand w-100">Submit</button>
   </form>
 
@@ -158,29 +175,41 @@ body { font-family: Arial, sans-serif; margin: 0; color: #333; background: #fff;
 </div>
 
 <!-- Facebook Feed -->
-<div class="container text-center py-5">
-  <h2 class="mb-4">📘 Follow Our Facebook Updates</h2>
-  <div class="fb-page"
-     data-href="https://www.facebook.com/thetourvibe"
-     data-tabs="timeline"
-     data-width="400"
-     data-height="500"
-     data-small-header="false"
-     data-adapt-container-width="true"
-     data-hide-cover="false"
-     data-show-facepile="true">
-    <blockquote cite="https://www.facebook.com/thetourvibe" class="fb-xfbml-parse-ignore">
-      <a href="https://www.facebook.com/thetourvibe">TourVibe Facebook</a>
-    </blockquote>
+<div class="container text-center py-5 fb-section">
+  <div class="fb-card" style="max-width: 500px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 12px; overflow: hidden;">
+    <div class="fb-header d-flex justify-content-between align-items-center px-3 py-2" style="background:#f5f6f7; font-weight:bold;">
+      <span><i class="bi bi-facebook"></i> TourVibe on Facebook</span>
+      <a href="https://www.facebook.com/thetourvibe" target="_blank" class="btn btn-sm btn-primary" style="border-radius:20px; font-weight:bold;">
+        👍 Follow
+      </a>
+    </div>
+    <div class="fb-body">
+      <div class="fb-page"
+         data-href="https://www.facebook.com/thetourvibe"
+         data-tabs="timeline"
+         data-width="500"
+         data-height="500"
+         data-small-header="false"
+         data-adapt-container-width="true"
+         data-hide-cover="false"
+         data-show-facepile="true">
+        <blockquote cite="https://www.facebook.com/thetourvibe" class="fb-xfbml-parse-ignore">
+          <a href="https://www.facebook.com/thetourvibe">TourVibe Facebook</a>
+        </blockquote>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- Facebook SDK (must be just before </body>) -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0">
+</script>
+
+
 <!-- Back to Top -->
 <div id="backToTop">⬆️</div>
-
-<!-- Facebook SDK -->
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0"></script>
 
 <script>
 const cards = document.querySelectorAll('.card');
@@ -208,6 +237,10 @@ form.addEventListener('submit', function(e){
   submitBtn.classList.add('btn-bounce');
   setTimeout(()=>submitBtn.classList.remove('btn-bounce'),300);
 
+  // 🔹 Show loading state
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
   const formData = new FormData();
   formData.append('name', document.getElementById('name').value);
   formData.append('phoneNumber', document.getElementById('phone').value);
@@ -221,7 +254,11 @@ form.addEventListener('submit', function(e){
   .then(() => {
     window.location.href = "thankyou.html"; // ✅ redirect
   })
-  .catch(err => console.error('Error!', err.message));
+  .catch(err => {
+    console.error('Error!', err.message);
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Submit';
+  });
 });
 
 const backToTopBtn = document.getElementById('backToTop');
@@ -230,4 +267,3 @@ backToTopBtn.addEventListener('click',()=>{ window.scrollTo({top:0, behavior:'sm
 </script>
 </body>
 </html>
-
